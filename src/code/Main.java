@@ -15,15 +15,19 @@ public class Main {
 		game.makeStrat();
 		
 		long lastUpdate = System.currentTimeMillis();
+		long lastTick = System.currentTimeMillis();
 		while(true) {
+			if ((System.currentTimeMillis() - lastTick) > 1000) {
+				player.Tick();
+				lastTick = System.currentTimeMillis();
+			}			
+
 			if ((System.currentTimeMillis() - lastUpdate) > Speed) {
 				game.repaintScreen();
 				lastUpdate = System.currentTimeMillis();
 			}
 			
 		}
-		
-		
 	}
 
 }

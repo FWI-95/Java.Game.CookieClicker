@@ -3,15 +3,22 @@ package gui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
+import Helpers.Helper;
 import code.Player;
 
-public class Game extends JFrame{
+public class Game extends JFrame implements ComponentListener{
 	Player p;
-	Cookie c;
+	ArrayList<UIPanel> panels;
 	
 	Font Arial;
 	
@@ -19,6 +26,8 @@ public class Game extends JFrame{
 	
 	public Game(Player parP) {
 		p = parP;
+		panels = new ArrayList<UIPanel>();
+
 		this.setSize(800,600);
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -26,9 +35,8 @@ public class Game extends JFrame{
 		
 		this.setTitle("Cookie Clicker");
 		
+		this.getContentPane().setLayout(null);
 		this.setLayout(null);
-		
-		this.setVisible(true);
 		
 		try {
 			//Load image
@@ -38,8 +46,16 @@ public class Game extends JFrame{
 		
 		Arial = new Font("Arial", Font.BOLD, 20);
 		
-		c = new Cookie(p);
-		this.getContentPane().add(c);
+		panels.add(new CookiePanel(p, this));
+		// panels.add(new HelperPanel(p, this));
+		// panels.add(new UpgradePanel(p, this));
+
+		for(int i = 0; i < panels.size(); i++){
+			this.getContentPane().add(panels.get(i));
+			this.addMouseListener(panels.get(i));
+		}
+
+		this.setVisible(true);
 	}
 	
 	public void makeStrat() {
@@ -48,19 +64,46 @@ public class Game extends JFrame{
 	}
 	
 	public void repaintScreen() {
-		Graphics g = strat.getDrawGraphics();
-		draw(g);
-		g.dispose();
-		strat.show();
+		do {
+			Graphics g;
+			g = strat.getDrawGraphics();
+			render(g);
+			g.dispose();
+			strat.show();
+		} while (strat.contentsLost());
 	}
 	
-	public void draw(Graphics g) {		
-		c.repaint();
-//		g.setColor(Color.BLACK);
-//		g.fillRect(c.getBounds().x, c.getBounds().y, c.getBounds().width, c.getBounds().height);
+	public void render(Graphics g) {
+		for(int i = 0; i < panels.size(); i++){
+			panels.get(i).render(g);
+		}
+		// g.setColor(Color.BLACK);
+		// g.fillRect(c.getBounds().x, c.getBounds().y, c.getBounds().width, c.getBounds().height);
 //		g.setFont(Arial);
 //		g.drawString(p.GetScoreAsString(), 0, 0);
 	}
-	
 
+	@Override
+	public void componentResized(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 }
